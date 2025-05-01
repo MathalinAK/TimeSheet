@@ -29,8 +29,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-default-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['your-render-service.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['timesheet-e91u.onrender.com', 'localhost', '127.0.0.1']
+
 
 INSTALLED_APPS = [
     'django.contrib.admin', 
