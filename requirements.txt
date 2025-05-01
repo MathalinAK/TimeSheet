@@ -3,3 +3,4 @@ djangorestframework
 djangorestframework-simplejwt
 PyJWT
 psycopg2-binary
+django-cors-headers==<version>
