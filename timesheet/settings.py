@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-default-key')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
-    '.onrender.com',
+    'timesheet-0lz1.onrender.com',
     'localhost',
     '127.0.0.1',
 ]
@@ -115,7 +115,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #     }
 # }
 AUTH_USER_MODEL = 'backend.User'  
-import dj_database_url
+
 
 import dj_database_url
 
@@ -160,7 +160,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # For development
 
 
 # Default primary key field type
