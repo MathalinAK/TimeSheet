@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from uuid import uuid4
-from .models import User, Timesheet, HolidayWeekend
+from .models import User, Timesheet, Project, UserProject
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -23,10 +23,11 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        user = User.objects.create(
-            name=validated_data['name'],
+        # This is the correct way to create a user with hashed password
+        user = User.objects.create_user(
             email=validated_data['email'],
-            password=make_password(validated_data['password'])
+            name=validated_data['name'],
+            password=validated_data['password']
         )
         return user
 
@@ -49,17 +50,41 @@ class LoginSerializer(serializers.Serializer):
         data['user'] = user
         return data
 
-class TimesheetSerializer(serializers.ModelSerializer):
-    user_name = serializers.SerializerMethodField()
-
+class ProjectSerializer(serializers.ModelSerializer):
+    owner_name = serializers.SerializerMethodField()
+    
     class Meta:
-        model = Timesheet
-        fields = ('id', 'user', 'date', 'task_name', 'description', 'duration', 'work_type', 'user_name')
+        model = Project
+        fields = ('id', 'name', 'description', 'owner', 'owner_name')
+        
+    def get_owner_name(self, obj):
+        return obj.owner.name if obj.owner else None
 
+class UserProjectSerializer(serializers.ModelSerializer):
+    user_name = serializers.SerializerMethodField()
+    project_name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = UserProject
+        fields = ('id', 'user', 'project', 'user_name', 'project_name')
+        
     def get_user_name(self, obj):
         return obj.user.name if obj.user else None
+        
+    def get_project_name(self, obj):
+        return obj.project.name if obj.project else None
 
-class HolidayWeekendSerializer(serializers.ModelSerializer):
+class TimesheetSerializer(serializers.ModelSerializer):
+    user_name = serializers.SerializerMethodField()
+    project_name = serializers.SerializerMethodField()
+    
     class Meta:
-        model = HolidayWeekend
-        fields = ('id', 'date', 'description')
+        model = Timesheet
+        fields = ('id', 'user_project', 'date', 'task_name', 'description', 'duration', 
+                  'work_type', 'user_name', 'project_name')
+    
+    def get_user_name(self, obj):
+        return obj.user_project.user.name if obj.user_project and obj.user_project.user else None
+        
+    def get_project_name(self, obj):
+        return obj.user_project.project.name if obj.user_project and obj.user_project.project else None

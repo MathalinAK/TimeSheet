@@ -7,17 +7,17 @@ class UserManager(BaseUserManager):
             raise ValueError("The Email field must be set")
         email = self.normalize_email(email)
         user = self.model(email=email, name=name)
+        
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
+
     def create_superuser(self, email, name, password=None):
         user = self.create_user(email, name, password)
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
         return user
-
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100)
@@ -36,6 +36,27 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = "user"
 
+class Project(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "project"
+
+class UserProject(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.name} - {self.project.name}"
+
+    class Meta:
+        db_table = "user_project"
+
 class Timesheet(models.Model):
     WORKTYPE_CHOICES = [
         ('working', 'Working'),
@@ -45,15 +66,15 @@ class Timesheet(models.Model):
         ('full_day_leave', 'Full Day Leave'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_project = models.ForeignKey(UserProject, on_delete=models.CASCADE)
     date = models.DateField()
     task_name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    duration = models.DecimalField(max_digits=5, decimal_places=2)
+    duration = models.DecimalField(max_digits=3, decimal_places=1)
     work_type = models.CharField(max_length=20, choices=WORKTYPE_CHOICES, default='working')
 
     def __str__(self):
-        return f"Timesheet - {self.user.name} ({self.date})"
+        return f"Timesheet - {self.user_project.user.name} ({self.date})"
 
     class Meta:
         db_table = "timesheet"

@@ -14,30 +14,24 @@ from pathlib import Path
 # Add this to your settings.py
 from datetime import timedelta
 import os
+import sys
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR))  # Add project root to path
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
-SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-default-key')
-
+SECRET_KEY = 'django-insecure-*oy@g=*4ugcgox9mv6m*sdc_xem#(53ge!%ur8^n8p1x3fj3-('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
-ALLOWED_HOSTS = [
-    'timesheet-0lz1.onrender.com',
-    'localhost',
-    '127.0.0.1',
+DEBUG = True
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
 ]
-
-
-
-
+ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin', 
     'django.contrib.auth',
@@ -71,10 +65,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "https://your-frontend-domain.com",
-    "https://your-render-service.onrender.com",
-]
 
 
 
@@ -104,27 +94,22 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'TimeSheet',
-#         'USER': 'postgres',
-#         'PASSWORD': 'your_db_password',
-#         'HOST': 'localhost',  
-#         'PORT': '5432',       
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'TIMESHEET',
+        'USER': 'postgres',
+        'PASSWORD': 'your_db_password',
+        'HOST': 'localhost',  
+        'PORT': '5432',       
+    }
+}
 AUTH_USER_MODEL = 'backend.User'  
 
-
-import dj_database_url
-
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600)
-}
-
-
-
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  
+    'backend.auth.EmailAuthBackend',              
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -160,9 +145,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # For development
-
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
