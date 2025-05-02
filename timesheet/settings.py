@@ -107,7 +107,7 @@ DATABASES = {
 }
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://postgres:123@localhost:5432/TIMESHEET'
+        default='postgresql://timesheet_7nrv_user:kf2TL8tY4JEFRELfm70kZYURLKGK7L6j@dpg-d0aalnruibrs73bmofq0-a.oregon-postgres.render.com/timesheet_7nrv'
     )
 }
 AUTH_USER_MODEL = 'backend.User'  
