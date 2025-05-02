@@ -15,6 +15,7 @@ from pathlib import Path
 from datetime import timedelta
 import os
 import sys
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))  # Add project root to path
@@ -99,10 +100,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'TIMESHEET',
         'USER': 'postgres',
-        'PASSWORD': 'your_db_password',
+        'PASSWORD': '123',
         'HOST': 'localhost',  
         'PORT': '5432',       
     }
+}
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgres://postgres:123@localhost:5432/TIMESHEET'
+    )
 }
 AUTH_USER_MODEL = 'backend.User'  
 
